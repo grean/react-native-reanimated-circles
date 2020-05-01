@@ -1,0 +1,47 @@
+{
+  "name": "react-native-reanimated-circles",
+  "version": "1.0.0",
+  "description": "Progress circles using reanimated and SVG",
+  "main": "/dist/index.js",
+  "scripts": {
+    "build": "tsc && echo 'Finished building NPM package'",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/grean/react-native-reanimated-circles.git"
+  },
+  "keywords": [
+    "react",
+    "native",
+    "reanimated",
+    "progress",
+    "circle",
+    "svg"
+  ],
+  "peerDependencies": {
+    "react-native-reanimated": "^1.7.1",
+    "react-native-gesture-handler": "^1.6.1",
+    "react-native-redash": "^10.1.1",
+    "react-native-svg": "^12.1.0"
+  },
+  "devDependencies": {
+    "@types/react": "^16.9.31",
+    "@types/react-native": "^0.62.1",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-native": "^0.61.5",
+    "react-native-reanimated": "^1.7.1",
+    "react-native-gesture-handler": "^1.6.1",
+    "react-native-redash": "^10.1.1",
+    "react-native-svg": "^12.1.0",
+    "tslib": "^1.11.1",
+    "typescript": "^3.8.3"
+  },
+  "author": "Réan Guillaume",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/grean/react-native-reanimated-circles/issues"
+  },
+  "homepage": "https://github.com/grean/react-native-reanimated-circles#readme"
+}
