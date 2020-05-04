@@ -3,32 +3,82 @@ import { StyleSheet, View, TextInput, Button, Text, Dimensions } from 'react-nat
 
 import { Circles } from 'react-native-reanimated-circles';
 
+console.disableYellowBox = true;
+
 export default App = () => {
-  const [val1, setVal1] = useState(0);
-  const [init, setInit] = useState(0);
-  const [knobValue, setKnobValue] = useState(50);
+  const { PI } = Math;
+  const profilKcal = 200;
+  const profilProt = 40;
+  const profilLip = 80;
+  const profilGlu = 60;
+  const initData = [{
+    name: `Objectif ${profilKcal} Kcal - Régime Dietethic`,
+    strokeWidth: '8%',
+    valueOld: 0,
+    value: 150,
+    maxValue: profilKcal,
+    negative: false,
+    colors: ['#CCC', '#00e5d9', '#E62929'],
+    textDisplay: true,
+    displayValue: profilKcal,
+    unit: 'Kcal',
+  }, {
+    name: `Protides ${profilProt} g`,
+    strokeWidth: '8%',
+    valueOld: 0,
+    value: 30,
+    maxValue: profilProt,
+    negative: false,
+    colors: ['#D9D7D7', '#e66700', '#E62929'],
+    textDisplay: false,
+    unit: 'g',
+  }, {
+    name: `Lipides ${profilLip} g`,
+    strokeWidth: '8%',
+    valueOld: 0,
+    value: 40,
+    maxValue: profilLip,
+    negative: false,
+    colors: ['#E6E6E6', '#e6da00', '#E62929'],
+    textDisplay: false,
+    unit: 'g',
+  }, {
+    name: `Glucides ${profilGlu} g`,
+    strokeWidth: '8%',
+    valueOld: 0,
+    value: 50,
+    maxValue: profilGlu,
+    negative: false,
+    colors: ['#F2F2F2', '#0be600', '#E62929'],
+    textDisplay: false,
+    unit: 'g',
+  }];
+  const [data, setData] = useState(initData);
+
   const { width, height } = Dimensions.get("window");
   const [isLandscape, setIsLandscape] = useState(height < width);
   let buttons = [-100, -33, -25, 0, 25, 33, 100];
 
-  callback = (values) => {
-    setKnobValue(values[0]);
-  }
-
-  callbackInit = (values) => {
-    setInit(init + values[0]);
-    _knobRef.resetInit();
-  }
-
   updateKnobValue = (value) => {
-    _knobRef.setValue(value === 0 ? value : knobValue + value);
+    let newData = [];
+    for (let index = 0; index < data.length; index++) {
+      let circle = { ...data[index] };
+      circle.valueOld = circle.value
+      circle.value = value === 0 ? value : circle.value + value;
+      if (circle.textDisplay) {
+        const diff = circle.maxValue - circle.value
+        circle.displayValue = (diff < 0 ? `+${Math.abs(diff)}` : diff.toString());
+      }
+      newData.push(circle);
+    }
+    setData(newData);
   }
 
-  onLayout = () => {
-    console.log("layautChangeApp");
-    const { width, height } = Dimensions.get("window");
-    setIsLandscape(height < width);
-  }
+  // onLayout = () => {
+  //   console.log("layautChangeApp");
+  //   const { width, height } = Dimensions.get("window");
+  //   setIsLandscape(height < width);
+  // }
 
 
   const styles = StyleSheet.create({
@@ -36,6 +86,7 @@ export default App = () => {
       flex: 1,
       flexDirection: isLandscape ? 'row' : 'column',
       alignItems: 'center',
+      backgroundColor: '#fff',
     },
     labels: {
       flex: 1,
@@ -60,14 +111,15 @@ export default App = () => {
     },
     knob: {
       flex: isLandscape ? 2 : 1,
+      // backgroundColor: 'blue',
     },
   });
 
 
 
   return (
-    <View style={styles.container} onLayout={this.onLayout}>
-      <View style={styles.labels}>
+    <View style={styles.container}>
+      {/* <View style={styles.labels}>
         <TextInput
           value={knobValue.toString()}
           style={styles.label}
@@ -101,6 +153,7 @@ export default App = () => {
           }}
         />
       </View>
+      */}
       <View style={styles.buttons}>
         {buttons.map((val, i) => <Button
           key={i}
@@ -110,24 +163,26 @@ export default App = () => {
         />)}
       </View>
       <Circles
-        ref={component => _knobRef = component}
-        margin={'5%'}
-        padding={'8.7%'}
-        rotation={-Math.PI / 2}
-        data={{
-          strokeWidth: 20,
-          value: knobValue,
-          maxValue: 100,
-          negative: false,
-          colors: ['#F0EFF5', '#00b5ad', '#DB2828'],
-          textStyle: { color: 'white', textAlign: 'center', fontSize: '15.333' },
-          textDisplay: true,
-        }}
-        gradientInt={[{ offset: '50%', stopColor: '#000' }, { offset: '80%', stopColor: '#E03997' }]}
-        gradientExt={[{ offset: '100%', stopColor: '#E03997' }, { offset: '80%', stopColor: '#000' }]}
+        margin={'0%'}
+        padding={'0%'}
+        paddingBetween={'1%'}
+        strokeWidthDecoration={'0%'}
+        rotation={-PI / 2}
+        gradientExt={[{ offset: '100%', stopColor: '#000', stopOpacity: '1' }]}
         style={styles.knob}
-        {...{ callback, callbackInit }}
+        {...{ data }}
+        legendStyle={{ color: 'black', fontSize: '5%', yOffset: '2%', startOffset: '50%', textAnchor: 'middle', rotate: PI / 2, fontWeight: 'bold' }}
+        textStyle={{
+          color: data[0].value > data[0].maxValue ? '#E62929' : '#00e5d9',
+          fontSize: '10%',
+          fontWeight: 'bold',
+          textShadowColor: 'rgba(0,0,0,0.5)',
+          textShadowOffset: { width: 0, height: 3 },
+          textShadowRadius: 3,
+        }}
       />
+      {/* gradientExt={[{ offset: '50%', stopColor: '#00b5ad', stopOpacity: '1' }, { offset: '70%', stopColor: '#fff', stopOpacity: '1' }]} */}
+      {/* textStyle={{ color: 'black', textAlign: 'center', fontSize: '10%' }} */}
     </View>
   );
 };
