@@ -2,11 +2,11 @@ import React from 'react';
 import { View, LayoutChangeEvent, PixelRatio } from 'react-native';
 import Animated, { Easing } from 'react-native-reanimated';
 
-const { Clock, timing, startClock, clockRunning, stopClock, Value, block, debug, set, cond, } = Animated;
+const { Clock, timing, startClock, clockRunning, stopClock, Value, block, debug, set, cond, onChange, call, eq, add, sub } = Animated;
 
 import CircularProgress from './CircularProgress';
 
-const AnimatedCircularProgress = Animated.createAnimatedComponent(CircularProgress);
+// const AnimatedCircularProgress = Animated.createAnimatedComponent(CircularProgress);
 
 export interface CirclesProps {
   margin: number | string;
@@ -20,11 +20,14 @@ export interface CirclesProps {
   gradientInt: Array<StopGradient>;
   gradientExt: Array<StopGradient>;
   style: object;
-  // callback: (values: readonly number[]) => void;
+  styleMargin: object;
+  // callback: () => void;
   // callbackInit: (values: readonly number[]) => void;
   canvasSize: number | undefined;
   legendStyle: LegendTextStyle;
   textStyle: TextStyle;
+  config: AnimationParams;
+  yOffset: number | string;
 }
 
 export interface CircleParams {
@@ -57,15 +60,21 @@ export interface LegendTextStyle {
   startOffset: string;
   fontWeight: string;
   textAnchor: "end" | "start" | "middle" | undefined;
-  rotate: number,
-  yOffset: number,
+  rotate: number;
+  yOffset: number;
 }
 
 export interface CirclesState {
   cpRef: React.RefObject<CircularProgress>;
-  canvasSize: number | undefined,
-  refreshKey: number,
-  // clock: Animated.Clock,
+  canvasSize: number | undefined;
+  refreshKey: number;
+  oldValues: Array<Animated.Value<number>>;
+}
+
+export interface AnimationParams {
+  duration: number;
+  easingFunction: (easing: Animated.EasingFunction) => Animated.EasingFunction;
+  easing: Animated.EasingFunction;
 }
 
 export default class Circles extends React.Component<CirclesProps, CirclesState> {
@@ -75,7 +84,7 @@ export default class Circles extends React.Component<CirclesProps, CirclesState>
       cpRef: React.createRef<CircularProgress>(),
       canvasSize: props.canvasSize,
       refreshKey: Math.random(),
-      // clock: new Clock(),
+      oldValues: this.props.data.map(d => new Animated.Value(0))
     }
   }
 
@@ -103,7 +112,8 @@ export default class Circles extends React.Component<CirclesProps, CirclesState>
     });
   }
 
-  runTiming = (clock: Animated.Clock, value: number, dest: number) => {
+  runTiming = (clock: Animated.Clock, value: Animated.Value<number>, dest: number, configParams: AnimationParams) => {
+
     const state = {
       finished: new Value(0),
       position: new Value(0),
@@ -112,9 +122,9 @@ export default class Circles extends React.Component<CirclesProps, CirclesState>
     };
 
     const config = {
-      duration: 1000,
+      duration: configParams.duration,
       toValue: new Value(0),
-      easing: Easing.inOut(Easing.cubic),
+      easing: configParams.easingFunction(configParams.easing),
     };
 
     return block([
@@ -137,7 +147,9 @@ export default class Circles extends React.Component<CirclesProps, CirclesState>
       // we run the step here that is going to update position
       timing(clock, state, config),
       // if the animation is over we stop the clock
-      cond(state.finished, debug('stop clock', stopClock(clock))),
+      cond(state.finished, [
+        debug('stop clock', stopClock(clock)),
+      ]),
       // we made the block return the updated position
       state.position,
     ]);
@@ -151,11 +163,12 @@ export default class Circles extends React.Component<CirclesProps, CirclesState>
   // centerLegendText = (legendLength: number) => legendLength * (-2 * Math.PI / 3 - 0.02) / 18;
 
   render() {
-    const { margin, data, padding, gradientExt, gradientInt, style, rotation, paddingBetween, legendStyle, strokeWidthDecoration, textStyle } = this.props;
-    const { canvasSize, refreshKey } = this.state;
+    const { margin, data, padding, gradientExt, gradientInt, style, rotation, paddingBetween, legendStyle, strokeWidthDecoration, textStyle, styleMargin, config, yOffset } = this.props;
+    const { canvasSize, refreshKey, oldValues } = this.state;
 
 
     const marginComputed = this.computeParam(margin);
+    const yOffsetComputed = this.computeParam(yOffset);
 
     const canvasSizeMarged = (canvasSize ?? 0) - marginComputed * 2;
     // const progressData = { ...data, ...{ strokeWidth: strokeWidthComputed } };
@@ -166,16 +179,17 @@ export default class Circles extends React.Component<CirclesProps, CirclesState>
     const strokeWidthDecorationComputed = this.computeParam(strokeWidthDecoration);
 
     const circles = data.map((circle, i) => {
-      const { strokeWidth, value, maxValue, negative, colors, textDisplay, valueOld, name, displayValue, unit } = circle;
+      const { strokeWidth, value, maxValue, negative, colors, textDisplay, name, displayValue } = circle;
       // const strokeWidthComputed = strokeWidth;
 
       const strokeWidthComputed = this.computeParam(strokeWidth);
 
-      const paddingComputed = this.computeParam(padding) + i * strokeWidthComputed + (i > 0 ? i * paddingBetweenComputed : 0) + strokeWidthDecorationComputed;
+      const paddingComputed = this.computeParam(padding) + i * strokeWidthComputed + ((i + 1) * paddingBetweenComputed) + strokeWidthDecorationComputed;
 
       const legendfontSizeComputed = this.computeParam(legendStyle.fontSize);
 
-      const finalValue = this.runTiming(new Clock(), valueOld, value);
+      const finalValue = this.runTiming(new Clock(), oldValues[i], value, config);
+      oldValues[i].setValue(value);
 
       // const legendText = `${name} ${maxValue} ${unit}`;
 
@@ -183,7 +197,7 @@ export default class Circles extends React.Component<CirclesProps, CirclesState>
 
       return <CircularProgress
         key={i}
-        {...{ canvasSize: canvasSizeMarged, strokeWidth: strokeWidthComputed, rotation, finalValue, maxValue, padding: paddingComputed, negative, colors, gradientInt, gradientExt, textStyle, textDisplay, legendFontSize: legendfontSizeComputed, legendColor: legendStyle.color, startOffset: legendStyle.startOffset, textAnchor: legendStyle.textAnchor, dy: legendStyle.yOffset, strokeWidthDecoration: strokeWidthDecorationComputed, displayValue, legendTextRotateZ: legendStyle.rotate, legendText: name, legendFontWeight: legendStyle.fontWeight }}
+        {...{ canvasSize: canvasSizeMarged, strokeWidth: strokeWidthComputed, rotation, finalValue, maxValue, padding: paddingComputed, negative, colors, gradientInt, gradientExt, textStyle, textDisplay, legendFontSize: legendfontSizeComputed, legendColor: legendStyle.color, startOffset: legendStyle.startOffset, textAnchor: legendStyle.textAnchor, dy: legendStyle.yOffset, strokeWidthDecoration: strokeWidthDecorationComputed, displayValue, legendTextRotateZ: legendStyle.rotate, legendText: name, legendFontWeight: legendStyle.fontWeight, yOffset: yOffsetComputed }}
       />
     });
 
@@ -192,11 +206,11 @@ export default class Circles extends React.Component<CirclesProps, CirclesState>
         flex: 1,
         alignSelf: 'stretch',
       }, style]}>
-        <View onLayout={this.onLayout} style={{
+        <View onLayout={this.onLayout} style={[{
           flex: 1,
           alignItems: 'center',
           justifyContent: 'center',
-        }}>
+        }, styleMargin]}>
           <View
             key={refreshKey}
             style={{
@@ -225,6 +239,8 @@ export default class Circles extends React.Component<CirclesProps, CirclesState>
     gradientInt: [{ offset: '50%', stopColor: '#000' }, { offset: '80%', stopColor: '#fff' }],
     gradientExt: [{ offset: '100%', stopColor: '#fff' }, { offset: '90%', stopColor: '#000' }],
     style: {},
+    styleMargin: {},
+    yOffset: 0,
     // callback: () => { },
     // calbackInit: () => { },
   };

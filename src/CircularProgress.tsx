@@ -35,6 +35,7 @@ interface CircularPogressProps {
   legendFontWeight: string,
   legendTextRotateZ: number,
   dy: number,
+  yOffset: number,
 }
 
 interface CircularPogressState {
@@ -117,7 +118,7 @@ export default class CircularProgress extends React.Component<CircularPogressPro
   render() {
     const { PI } = Math;
     // const { margin } = this.props;
-    const { canvasSize, gradientInt, gradientExt, rotation, strokeWidth, negative, colors, maxValue, textStyle, textDisplay, finalValue, legendFontSize, legendColor, startOffset, strokeWidthDecoration, displayValue, legendTextRotateZ, legendText, textAnchor, dy, legendFontWeight } = this.props;
+    const { canvasSize, gradientInt, gradientExt, rotation, strokeWidth, negative, colors, maxValue, textStyle, textDisplay, finalValue, legendFontSize, legendColor, startOffset, strokeWidthDecoration, displayValue, legendTextRotateZ, legendText, textAnchor, dy, legendFontWeight, yOffset } = this.props;
 
     const { x, y, cx, cy, r, startAngle, endAngle, canvasRadius, translateX, translateY, α, largeArcFlag, endX, endY, aroundCount, previousAngle, plateRadius, sweep, startX, startY, isNegative, previousIsNegative, counterclockwise, init, rapport, mantisse } = this.state;
 
@@ -159,7 +160,7 @@ export default class CircularProgress extends React.Component<CircularPogressPro
                 debug('finalValue ', finalValue),
                 set(isNegative, lessThan(finalValue, 0)),
                 debug('isNegative ', isNegative),
-                set(rapport, abs(divide(finalValue, maxValue))),
+                cond(eq(maxValue, 0), set(rapport, 0), set(rapport, abs(divide(finalValue, maxValue)))),
                 debug('rapport ', rapport),
                 set(aroundCount, cond(greaterThan(rapport, 0), floor(rapport), ceil(rapport))),
                 debug('aroundCount ', aroundCount),
@@ -216,7 +217,7 @@ export default class CircularProgress extends React.Component<CircularPogressPro
               ])
             }
           </Animated.Code>
-          <AnimatedSvg width={canvasSize} height={canvasSize} viewBox={`0 0 ${canvasSize} ${canvasSize}`}>
+          <AnimatedSvg width={canvasSize} height={canvasSize} viewBox={`${yOffset} 0 ${canvasSize} ${canvasSize}`}>
             <Defs>
               {/* <RadialGradient id="radialPlateInt">
               {
@@ -268,7 +269,7 @@ export default class CircularProgress extends React.Component<CircularPogressPro
               height: canvasSize * fontSizePercent * 2,
               width: canvasSize * fontSizePercent * 4,
               top: canvasSize / 2 - canvasSize * fontSizePercent,
-              left: canvasSize / 2 - canvasSize * fontSizePercent * 2,
+              left: canvasSize / 2 - canvasSize * fontSizePercent * 2 - yOffset,
               justifyContent: 'space-evenly',
               // backgroundColor: 'red',
               // borderColor: plateColor,
@@ -289,7 +290,7 @@ export default class CircularProgress extends React.Component<CircularPogressPro
           ],
         }}
         >
-          <AnimatedSvg width={canvasSize} height={canvasSize} viewBox={`0 0 ${canvasSize} ${canvasSize}`}>
+          <AnimatedSvg width={canvasSize} height={canvasSize} viewBox={`${-yOffset} 0 ${canvasSize} ${canvasSize}`}>
             <AnimatedCircle
               id={"pathText"}
               {...{ strokeWidth, cx, cy, r }}

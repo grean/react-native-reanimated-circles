@@ -24,6 +24,7 @@ interface CircularPogressProps {
     legendFontWeight: string;
     legendTextRotateZ: number;
     dy: number;
+    yOffset: number;
 }
 interface CircularPogressState {
     cx: number;

@@ -12,9 +12,12 @@ export interface CirclesProps {
     gradientInt: Array<StopGradient>;
     gradientExt: Array<StopGradient>;
     style: object;
+    styleMargin: object;
     canvasSize: number | undefined;
     legendStyle: LegendTextStyle;
     textStyle: TextStyle;
+    config: AnimationParams;
+    yOffset: number | string;
 }
 export interface CircleParams {
     name: string;
@@ -51,11 +54,17 @@ export interface CirclesState {
     cpRef: React.RefObject<CircularProgress>;
     canvasSize: number | undefined;
     refreshKey: number;
+    oldValues: Array<Animated.Value<number>>;
+}
+export interface AnimationParams {
+    duration: number;
+    easingFunction: (easing: Animated.EasingFunction) => Animated.EasingFunction;
+    easing: Animated.EasingFunction;
 }
 export default class Circles extends React.Component<CirclesProps, CirclesState> {
     constructor(props: CirclesProps);
     onLayout: (event: LayoutChangeEvent) => void;
-    runTiming: (clock: Animated.Clock, value: number, dest: number) => Animated.Node<number>;
+    runTiming: (clock: Animated.Clock, value: Animated.Value<number>, dest: number, configParams: AnimationParams) => Animated.Node<number>;
     computeParam: (param: string | number) => number;
     render(): JSX.Element;
     static defaultProps: {
@@ -80,6 +89,8 @@ export default class Circles extends React.Component<CirclesProps, CirclesState>
             stopColor: string;
         }[];
         style: {};
+        styleMargin: {};
+        yOffset: number;
     };
 }
 //# sourceMappingURL=Circles.d.ts.map

@@ -47,7 +47,7 @@ export default class CircularProgress extends React.Component {
     render() {
         const { PI } = Math;
         // const { margin } = this.props;
-        const { canvasSize, gradientInt, gradientExt, rotation, strokeWidth, negative, colors, maxValue, textStyle, textDisplay, finalValue, legendFontSize, legendColor, startOffset, strokeWidthDecoration, displayValue, legendTextRotateZ, legendText, textAnchor, dy, legendFontWeight } = this.props;
+        const { canvasSize, gradientInt, gradientExt, rotation, strokeWidth, negative, colors, maxValue, textStyle, textDisplay, finalValue, legendFontSize, legendColor, startOffset, strokeWidthDecoration, displayValue, legendTextRotateZ, legendText, textAnchor, dy, legendFontWeight, yOffset } = this.props;
         const { x, y, cx, cy, r, startAngle, endAngle, canvasRadius, translateX, translateY, α, largeArcFlag, endX, endY, aroundCount, previousAngle, plateRadius, sweep, startX, startY, isNegative, previousIsNegative, counterclockwise, init, rapport, mantisse } = this.state;
         // isLandscape, 
         const bgColor = interpolateColor(aroundCount, {
@@ -79,7 +79,7 @@ export default class CircularProgress extends React.Component {
             debug('finalValue ', finalValue),
             set(isNegative, lessThan(finalValue, 0)),
             debug('isNegative ', isNegative),
-            set(rapport, abs(divide(finalValue, maxValue))),
+            cond(eq(maxValue, 0), set(rapport, 0), set(rapport, abs(divide(finalValue, maxValue)))),
             debug('rapport ', rapport),
             set(aroundCount, cond(greaterThan(rapport, 0), floor(rapport), ceil(rapport))),
             debug('aroundCount ', aroundCount),
@@ -124,7 +124,7 @@ export default class CircularProgress extends React.Component {
             debug('largeArcFlag ', largeArcFlag),
         ])}
           </Animated.Code>
-          <AnimatedSvg width={canvasSize} height={canvasSize} viewBox={`0 0 ${canvasSize} ${canvasSize}`}>
+          <AnimatedSvg width={canvasSize} height={canvasSize} viewBox={`${yOffset} 0 ${canvasSize} ${canvasSize}`}>
             <Defs>
               
               <RadialGradient id="radialPlateExt">
@@ -154,7 +154,7 @@ export default class CircularProgress extends React.Component {
             height: canvasSize * fontSizePercent * 2,
             width: canvasSize * fontSizePercent * 4,
             top: canvasSize / 2 - canvasSize * fontSizePercent,
-            left: canvasSize / 2 - canvasSize * fontSizePercent * 2,
+            left: canvasSize / 2 - canvasSize * fontSizePercent * 2 - yOffset,
             justifyContent: 'space-evenly',
         }}>
               <ReText text={string `${displayValue}`} style={textStyleComputed}/>
@@ -168,7 +168,7 @@ export default class CircularProgress extends React.Component {
                 { rotateZ: legendTextRotateZ },
             ],
         }}>
-          <AnimatedSvg width={canvasSize} height={canvasSize} viewBox={`0 0 ${canvasSize} ${canvasSize}`}>
+          <AnimatedSvg width={canvasSize} height={canvasSize} viewBox={`${-yOffset} 0 ${canvasSize} ${canvasSize}`}>
             <AnimatedCircle id={"pathText"} {...{ strokeWidth, cx, cy, r }} fill="none"/>
             <Text {...{ fontSize: legendFontSize, fill: legendColor, textAnchor, dy, fontWeight: legendFontWeight }}>
               <TextPath href="#pathText" {...{ startOffset }}>
