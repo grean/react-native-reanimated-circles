@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, TextInput, Button, Text, Dimensions } from 'react-native';
+import { Easing } from 'react-native-reanimated';
 
 import { Circles } from 'react-native-reanimated-circles';
 
@@ -7,15 +8,16 @@ console.disableYellowBox = true;
 
 export default App = () => {
   const { PI } = Math;
-  const profilKcal = 200;
-  const profilProt = 40;
-  const profilLip = 80;
-  const profilGlu = 60;
+  const profilKcal = 100;
+  const profilProt = 0;
+  const profilLip = 0;
+  const profilGlu = 0;
+  const strokeWidth = '6%';
   const initData = [{
     name: `Objectif ${profilKcal} Kcal - Régime Dietethic`,
-    strokeWidth: '8%',
+    strokeWidth,
     valueOld: 0,
-    value: 150,
+    value: 0,
     maxValue: profilKcal,
     negative: false,
     colors: ['#CCC', '#00e5d9', '#E62929'],
@@ -24,9 +26,9 @@ export default App = () => {
     unit: 'Kcal',
   }, {
     name: `Protides ${profilProt} g`,
-    strokeWidth: '8%',
+    strokeWidth,
     valueOld: 0,
-    value: 30,
+    value: 3,
     maxValue: profilProt,
     negative: false,
     colors: ['#D9D7D7', '#e66700', '#E62929'],
@@ -34,7 +36,7 @@ export default App = () => {
     unit: 'g',
   }, {
     name: `Lipides ${profilLip} g`,
-    strokeWidth: '8%',
+    strokeWidth,
     valueOld: 0,
     value: 40,
     maxValue: profilLip,
@@ -44,7 +46,7 @@ export default App = () => {
     unit: 'g',
   }, {
     name: `Glucides ${profilGlu} g`,
-    strokeWidth: '8%',
+    strokeWidth,
     valueOld: 0,
     value: 50,
     maxValue: profilGlu,
@@ -72,6 +74,10 @@ export default App = () => {
       newData.push(circle);
     }
     setData(newData);
+  }
+
+  callback = (values) => {
+    console.log('lol callback');
   }
 
   // onLayout = () => {
@@ -165,20 +171,29 @@ export default App = () => {
       <Circles
         margin={'0%'}
         padding={'0%'}
-        paddingBetween={'1%'}
+        paddingBetween={'0.5%'}
         strokeWidthDecoration={'0%'}
         rotation={-PI / 2}
         gradientExt={[{ offset: '100%', stopColor: '#000', stopOpacity: '1' }]}
-        style={styles.knob}
+        style={{
+          flex: 1,
+          // backgroundColor: 'blue',
+        }}
         {...{ data }}
-        legendStyle={{ color: 'black', fontSize: '5%', yOffset: '2%', startOffset: '50%', textAnchor: 'middle', rotate: PI / 2, fontWeight: 'bold' }}
+        legendStyle={{ color: 'black', fontSize: '4%', yOffset: '1.5%', startOffset: '50%', textAnchor: 'middle', rotate: PI / 2, fontWeight: 'bold' }}
         textStyle={{
-          color: data[0].value > data[0].maxValue ? '#E62929' : '#00e5d9',
+          color: initData[0].value > initData[0].maxValue ? '#E62929' : '#00e5d9',
           fontSize: '10%',
           fontWeight: 'bold',
           textShadowColor: 'rgba(0,0,0,0.5)',
           textShadowOffset: { width: 0, height: 3 },
           textShadowRadius: 3,
+        }}
+        {...{ callback }}
+        config={{
+          duration: 500,
+          easingFunction: Easing.inOut,
+          easing: Easing.cubic,
         }}
       />
       {/* gradientExt={[{ offset: '50%', stopColor: '#00b5ad', stopOpacity: '1' }, { offset: '70%', stopColor: '#fff', stopOpacity: '1' }]} */}
