@@ -79,7 +79,7 @@ export default class CircularProgress extends React.Component {
             debug('finalValue ', finalValue),
             set(isNegative, lessThan(finalValue, 0)),
             debug('isNegative ', isNegative),
-            cond(eq(maxValue, 0), set(rapport, 0), set(rapport, abs(divide(finalValue, maxValue)))),
+            cond(eq(maxValue, 0), cond(greaterThan(finalValue, 0), set(rapport, 2), set(rapport, 0)), set(rapport, abs(divide(finalValue, maxValue)))),
             debug('rapport ', rapport),
             set(aroundCount, cond(greaterThan(rapport, 0), floor(rapport), ceil(rapport))),
             debug('aroundCount ', aroundCount),
