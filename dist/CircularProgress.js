@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 import Svg, { Defs, Stop, Path, Circle, RadialGradient, Text, TextPath } from 'react-native-svg';
 import Animated, { lessThan, lessOrEq, greaterThan } from 'react-native-reanimated';
 import { ReText, string, interpolateColor } from 'react-native-redash';
-const { multiply, Value, event, block, debug, set, sub, add, atan, divide, cos, sin, cond, concat, eq, tan, round, abs, and, or, onChange, call, neq, floor, ceil } = Animated;
+const { multiply, Value, event, block, set, sub, add, atan, divide, cos, sin, cond, concat, eq, tan, round, abs, and, or, onChange, call, neq, floor, ceil } = Animated;
 const AnimatedPath = Animated.createAnimatedComponent(Path);
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 const AnimatedSvg = Animated.createAnimatedComponent(Svg);
@@ -75,43 +75,43 @@ export default class CircularProgress extends React.Component {
         }}>
           <Animated.Code>
             {() => block([
-            debug('BEGIN ************************************ ', aroundCount),
-            debug('finalValue ', finalValue),
+            // debug('BEGIN ************************************ ', aroundCount),
+            // debug('finalValue ', finalValue),
             set(isNegative, lessThan(finalValue, 0)),
-            debug('isNegative ', isNegative),
+            // debug('isNegative ', isNegative),
             cond(eq(maxValue, 0), cond(greaterThan(finalValue, 0), set(rapport, 2), set(rapport, 0)), set(rapport, abs(divide(finalValue, maxValue)))),
-            debug('rapport ', rapport),
+            // debug('rapport ', rapport),
             set(aroundCount, cond(greaterThan(rapport, 0), floor(rapport), ceil(rapport))),
-            debug('aroundCount ', aroundCount),
+            // debug('aroundCount ', aroundCount),
             set(mantisse, sub(rapport, aroundCount)),
-            debug('mantisse ', mantisse),
+            // debug('mantisse ', mantisse),
             set(endAngle, multiply(2 * PI, mantisse)),
-            debug('endAngle1 ', endAngle),
+            // debug('endAngle1 ', endAngle),
             cond(eq(isNegative, 1), [
-                debug('endAngle2 ', endAngle),
+                // debug('endAngle2 ', endAngle),
                 set(endAngle, sub(endAngle, -2 * PI)),
             ]),
             set(x, add(cx, multiply(r, cos(endAngle)))),
             set(y, add(cy, multiply(r, sin(endAngle)))),
-            debug('x ', x),
-            debug('y ', y),
+            // debug('x ', x),
+            // debug('y ', y),
             //translate x and y to polar coordinates
             set(translateX, sub(x, canvasRadius)),
             set(translateY, sub(canvasRadius, y)),
-            debug('translateX  ', translateX),
-            debug('translateY  ', translateY),
+            // debug('translateX  ', translateX),
+            // debug('translateY  ', translateY),
             //complete atan2 function with atan because redash@9.6.0 atan2 function not enough accurate
             set(α, cond(eq(translateX, 0), tan(-1), atan(divide(translateY, translateX)))),
             cond(or(lessThan(translateX, 0), and(eq(translateX, 0), greaterThan(translateY, 0))), set(α, add(α, PI))),
             //for quandrant 2 and 3 we add PI to get 2PI values (first quadrant is top right)
             //tan function give us an angle of [0, PI];[-PI, 0] so we need to have 2PI radians value representation
             set(α, cond(lessOrEq(α, 0), add(α, 2 * PI), α)),
-            debug('α ', α),
+            // debug('α ', α),
             //We need to add -2PI and then invert the sign in order to inverse the rotation
             set(endAngle, multiply(-1, add(α, -2 * PI))),
             //when translateY === 0 then endAngle value is -0 and abs function don´t seems to remove sign.. so in this case we have to remove it by multiply by -1
             cond(and(eq(translateY, 0), greaterThan(translateX, 0)), set(endAngle, multiply(-1, endAngle))),
-            debug('endAngle ', endAngle),
+            // debug('endAngle ', endAngle),
             //calculate end arcTo coordinates
             set(endX, add(cx, multiply(r, cos(endAngle)))),
             set(endY, add(cy, multiply(r, sin(endAngle)))),
@@ -121,7 +121,6 @@ export default class CircularProgress extends React.Component {
             ], [
                 set(largeArcFlag, cond(lessOrEq(sub(endAngle, startAngle), PI), 0, 1)),
             ]),
-            debug('largeArcFlag ', largeArcFlag),
         ])}
           </Animated.Code>
           <AnimatedSvg width={canvasSize} height={canvasSize} viewBox={`${yOffset} 0 ${canvasSize} ${canvasSize}`}>

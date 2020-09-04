@@ -14,7 +14,7 @@
     "react-native": "0.62.2",
     "react-native-gesture-handler": "^1.6.1",
     "react-native-reanimated": "^1.9.0",
-    "react-native-reanimated-circles": "^1.5.3",
+    "react-native-reanimated-circles": "file:../react-native-reanimated-circles-1.5.4.tgz",
     "react-native-redash": "^10.1.1",
     "react-native-svg": "^12.1.0"
   },

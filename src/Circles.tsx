@@ -147,8 +147,11 @@ export default class Circles extends React.Component<CirclesProps, CirclesState>
       // we run the step here that is going to update position
       timing(clock, state, config),
       // if the animation is over we stop the clock
+      // cond(state.finished, [
+      //   debug('stop clock', stopClock(clock)),
+      // ]),
       cond(state.finished, [
-        debug('stop clock', stopClock(clock)),
+        stopClock(clock)
       ]),
       // we made the block return the updated position
       state.position,
