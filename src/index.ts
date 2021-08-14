@@ -1,3 +1,3 @@
 import Circles from './Circles';
 
-export { Circles };
+export default Circles;
