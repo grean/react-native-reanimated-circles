@@ -2,9 +2,8 @@ import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
 import { Button, StyleSheet, Text, View } from 'react-native';
 import { useFonts } from 'expo-font';
-import Picker from '@grean/react-native-carousel-picker';
 
-import ViewPager from '../src/index';
+import Circles from '../src/index';
 // import { NavigationType } from '../src/types';
 
 
@@ -74,81 +73,7 @@ export default function App() {
       <Button color={pageIndex === 1 ? 'black' : 'white'} title="1" onPress={() => setPageIndex(1)} />
       <Button color={pageIndex === 2 ? 'black' : 'white'} title="2" onPress={() => setPageIndex(2)} />
       <View style={styles.background}>
-        <ViewPager
-          {...{
-            style: {
-              flex: 1,
-              // flex: 0.765,
-              // backgroundColor: '#fff',
-              // overflow: 'hidden',
-              // alignItems: 'center',
-              // backgroundColor: 'pink',
-              // backgroundColor: 'transparent',
-            },
-            // childStyle: {
-            //   flex: 1,
-            //   // marginVertical,
-            //   // paddingTop: itemHeight,
-            //   backgroundColor: "green",
-            //   flexDirection: 'row',
-            //   // justifyContent: 'flex-end',
-            // },
-            index: pageIndex,
-            // navigation: false,
-            navigationHeight: 0.08,
-            navigationPadding: 0.05,
-            // navigationHeight: 0.075,
-            // navigationType: NavigationType.ABSOLUTE,
-            navigationType: NavigationType.FLEX,
-            onChanged: onPageChanged,
-            pointColor: [255, 0, 255],
-            pointRadius: 8,
-            tickRadius: 4,
-          }}
-        >
-          <View style={styles.page}>
-            <Text style={styles.text}>Screen 1</Text>
-          </View>
-          <View style={styles.page}>
-            {/* <Text>lol</Text> */}
-            <View style={styles.header}>
-            </View>
-            <View style={styles.picker}>
-              <Picker
-                {...{
-                  items,
-                  index: itemIndex,
-                  onChanged,
-                  marginVerticalPercentage,
-                  marginHorizontalPercentage,
-                  display,
-                  opacityRangeOut,
-                  scaleRangeOut,
-                  spaceBetween,
-                  textStyle: {
-                    fontFamily: 'cookie',
-                    textShadowColor: 'rgba(0, 0, 0, 0.75)',
-                    textShadowOffset: { width: 3, height: 3 },
-                    textShadowRadius: 10,
-                    paddingVertical: 5,
-                  },
-                  containerStyle: {
-                    backgroundColor: 'green',
-                    // ...carouPicker,
-                    // textShadowColor: 'rgba(0, 0, 0, 0.75)',
-                    // textShadowOffset: { width: 3, height: 3 },
-                    // textShadowRadius: 10,
-                  },
-                  fontSize: 200,
-                }}
-              />
-            </View>
-            <View style={styles.bottom}></View>
-          </View>
-          <View style={styles.page}>
-            <Text style={styles.text}>Screen 3</Text>
-          </View>
-        </ViewPager>
+        
       </View>
     </View>
   );
