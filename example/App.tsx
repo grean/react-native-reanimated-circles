@@ -9,54 +9,10 @@ import Circles from '../src/index';
 
 export default function App() {
 
-  const currentItemIndex = 1
-  const [itemIndex, setItemIndex] = useState(currentItemIndex)
-  const currentPageIndex = 1
-  const [pageIndex, setPageIndex] = useState(currentPageIndex)
-  const display = "TOP_BOTTOM"
-  const spaceBetween = 1 / 3
-  const opacityRangeOut = [0, 0.6, 1, 0.6, 0]
-  const scaleRangeOut = [0, 0.6, 1, 0.6, 0]
-  const profils = [
-    {
-      "title": "Retraité sportif sportif",
-      "desc": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor."
-    },
-    {
-      "title": "Adolescent",
-      "desc": "Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi. Proin porttitor."
-    },
-    {
-      "title": "Salarié debout",
-      "desc": "Duis arcu massa, scelerisque vitae, consequat in, pretium a, enim. Pellentesque congue."
-    },
-    {
-      "title": "Retraité sportif2",
-      "desc": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor."
-    },
-    {
-      "title": "Adolescent2",
-      "desc": "Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi. Proin porttitor."
-    },
-    {
-      "title": "Salarié debout2",
-      "desc": "Duis arcu massa, scelerisque vitae, consequat in, pretium a, enim. Pellentesque congue."
-    }
-  ]
-  const items = profils.map(item => item.title)
-  const marginVerticalPercentage = 0
-  const marginHorizontalPercentage = 0
-  // const marginHorizontalPercentage = 0.05
-
-  const onChanged = (itemIndex: number) => {
-    setItemIndex(itemIndex)
-    console.log(`PICKER onChanged itemIndex ${itemIndex}`)
-  }
-
-  const onPageChanged = (itemIndex: number) => {
-    setPageIndex(itemIndex)
-    console.log(`VIEWPAGER onChanged itemIndex ${itemIndex}`)
-  }
+  const defaultValues1 = [0.25, 1.33, 0.75, 0.999]
+  const defaultValues2 = [0.75, 0.66, 0.1, 1.2]
+  // const [values, setValues] = useState(defaultValues1)
+  const [values, setValues] = useState(defaultValues2)
 
   let [fontsLoaded] = useFonts({
     // 'dancingVar': require('./fonts/DancingScript-VariableFont_wght.ttf'),
@@ -69,11 +25,14 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Button color={pageIndex === 0 ? 'black' : 'white'} title="0" onPress={() => setPageIndex(0)} />
-      <Button color={pageIndex === 1 ? 'black' : 'white'} title="1" onPress={() => setPageIndex(1)} />
-      <Button color={pageIndex === 2 ? 'black' : 'white'} title="2" onPress={() => setPageIndex(2)} />
+      <Button color={'black'} title="0" onPress={() => setValues(defaultValues1)} />
+      <Button color={'black'} title="1" onPress={() => setValues(defaultValues2)} />
       <View style={styles.background}>
-        
+        <Circles
+          {...{
+            values,
+          }}
+        />
       </View>
     </View>
   );
@@ -95,7 +54,7 @@ const styles = StyleSheet.create({
   },
   background: {
     height: '70%',
-    backgroundColor: 'orange',
+    backgroundColor: 'white',
     justifyContent: 'center',
   },
   header: {
