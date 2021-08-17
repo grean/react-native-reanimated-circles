@@ -14,36 +14,39 @@ const AnimatedPath = Animated.createAnimatedComponent(Path);
 
 interface CircularPogressProps {
   // angle in radian unit
-  value: number
   // angle?: Animated.SharedValue<number>
   // delay: number
   // duration: number
   // easing: Animated.EasingFunction
-  height: number
+  canvasSize: number
   index: number
   colors?: string[]
+  margin: number
   // radius?: number
   // strokeWidth?: number
   textOffsets?: number[]
-  width: number
+  value: number
+  // width: number
 }
 
 const CircularPogress = ({
   // angle = Math.PI * 1.999,
   // angle = Math.PI,
-  value,
+  canvasSize,
+  colors = ['rgb(192,192,192)', 'rgb(0,0,255)', 'rgb(255,0,0)'],
   // angle = 3 * Math.PI / 2,
   // angle = -2 * Math.PI / 3,
   // delay,
   // duration,
   // easing,
-  height,
+  // height,
   index,
-  colors = ['rgb(192,192,192)', 'rgb(0,0,255)', 'rgb(255,0,0)'],
+  margin,
   // radius,
   // strokeWidth,
-  textOffsets = [4.6, 4.6, 4.6, 4.6],
-  width,
+  textOffsets = [4.6, 4.6, 4.6, 4.6, 4.6],
+  value,
+  // width,
 }: CircularPogressProps) => {
   const alpha = useSharedValue(0);
   // const radius = width * radius;
@@ -59,9 +62,8 @@ const CircularPogress = ({
 
   // value of the radius
   const strokeWidth = 6
-  const margin = 30
-  const r = width / 2 - ((index + 1) * margin)
-  const ox = width / 2
+  const r = canvasSize / 2 - ((index + 1) * margin)
+  const ox = canvasSize / 2
   const oy = ox
   const padding = ox - r
   // const padding = width / 2 - r
@@ -151,7 +153,7 @@ const CircularPogress = ({
       <Text
         {...{
           fontFamily: processFontFamily('cookie') ?? undefined,
-          fontSize: 28,
+          fontSize: canvasSize * 0.07,
           fill: 'black',
           // textAnchor,
           dy: r * 0.01,

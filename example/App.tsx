@@ -9,8 +9,8 @@ import Circles from '../src/index';
 
 export default function App() {
 
-  const defaultValues1 = [0.25, 1.33, 0.75, 0.999]
-  const defaultValues2 = [0.75, 0.66, 0.1, 1.2]
+  const defaultValues1 = [1.1, 0.25, 1.33, 0.75, 0.999]
+  const defaultValues2 = [0.75, 0.66, 0.1, 1.2, 1.9]
   // const [values, setValues] = useState(defaultValues1)
   const [values, setValues] = useState(defaultValues2)
 
